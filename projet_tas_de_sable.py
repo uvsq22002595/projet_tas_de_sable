@@ -15,48 +15,51 @@ from random import *
 #Variables
 #HAUTEUR = 600
 #LARGEUR = 600
-a, b, c, d, e, f, g, h, i = 0, 0, 0, 0, 0, 0, 0, 0, 0
+
 
 #################################
 #Fonctions
 
-def cadrillage_aleatoire():
-    tableau_valeur = [a, b, c, d, e, f, g, h, i]
-    for j in range (0, 9):
-        tableau_valeur[j] = randrange(0, 10)
-    
-
-
-    cadre_0 = [
-        [" ", "#", "#", "#", " "],
-        ["#", a, b, c, "#"],
-        ["#", d, e, f, "#"],
-        ["#", g, h, i, "#"],
-        [" ", "#", "#", "#", " "]
-        ]
-    return tableau_valeur
-    #print(cadre_0)
-
-def create(tableau_valeur):
-    result = [[" "," "," "," "," "] for a in range(0,5)]
-    for a in range(0, len(result)):
-        for b in range(0,len(result)):
+def creation():
+    """Cette fonction permet de créer et d'afficher la grille dans la console"""
+    RESULT = [[" "," "," "," "," "] for a in range(0,5)]
+    for a in range(0, len(RESULT)):
+        for b in range(0,len(RESULT)):
             if ((a == 0 or a == 4) and 0 < b < 4) or ((b == 0 or b == 4) and 0 < a < 4):
-                result[a][b] = "#"
+                RESULT[a][b] = "#"
             if ((0 < a < 4) and 0 < b < 4):
-                result[a][b] = randrange(0,10)
-    for z in range(0, len(result)):
-        print(result[z])
+                RESULT[a][b] = randrange(0,10)
     
-    return result
+    return RESULT
+
+def affichage(CADRE):
+    """Cette fonction permet d'afficher correctement la grille dans la console"""
+    RESULT=""
+    for a in CADRE:
+        for b in a:
+            RESULT+=str(b)
+        RESULT+='\n'
+    return RESULT
+
+def valeur(CADRE):
+    """Cette fonction permet de récupérer uniquement les valeurs de la grille"""
+    #print("le cardre", cadre)
+    liste_valeur = [[], [], []]
+    for a in range(len(CADRE)): 
+        for b in range (len(CADRE)):
+            if type(CADRE[a][b]) == int :
+                liste_valeur[a-1].append(CADRE[a][b])
+    return liste_valeur
+
+
+
 
 #######################################
 # appel à fonction
 
-cadrillage_aleatoire()
-create(cadrillage_aleatoire)
-
-
+A = creation()
+print(affichage(A))
+print(valeur(A))
 #######################################
 # ajout du compteur
 #label_counter = Label(racine, text="5", font=("Courrier", 30), bg="#dee5dc")
