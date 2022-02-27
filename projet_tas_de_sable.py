@@ -20,23 +20,24 @@ n = 3
 #################################
 #Fonctions sans parties graphique
 
-def creation(x, y):
+def creation(n):
     """Cette fonction permet de créer et d'afficher la grille dans la console"""
 
-    RESULT = [[" " for a in range(x)]for b in range(y)]
-    for a in range(y):
-        for b in range(x):
+    RESULT = [[" " for a in range(n+2)]for b in range(n+2)]
+    for a in range(n + 2):
+        for b in range(n + 2):
             
-            if ((a == 0 or a == y-1) and 0 < b < x-1) or ((b == 0 or b == x-1) and 0 < a < y-1):
+            if ((a == 0 or a == n+1) and 0 < b < n+1) or ((b == 0 or b == n+1) and 0 < a < n+1):
                 RESULT[a][b] = "#"
-            if ((0 < a < y-1) and 0 < b < x-1):
+            if ((0 < a < n+1) and 0 < b < n+1):
                 RESULT[a][b] = randrange(0,10)
     
-    return RESULT, x, y
+    return RESULT
 
 def affichage(CADRE):
     """Cette fonction permet d'afficher correctement la grille dans la console"""
     RESULT=""
+    #CADRE = CADRE[0]
     for a in CADRE:
         for b in a:
             RESULT+=str(b)
@@ -46,9 +47,11 @@ def affichage(CADRE):
 def valeur(CADRE):
     """Cette fonction permet de récupérer uniquement les valeurs de la grille"""
     LISTE_VALEUR = []
+    #CADRE = CADRE[0]
     for a in range (len(CADRE)):
         LISTE_VALEUR.append([])
         for b in range (len(CADRE[a])):
+            #print("valeur de b", b)
             if type(CADRE[a][b]) == int:
                 #print(CADRE[a][b])
                 LISTE_VALEUR[a].append(CADRE[a][b])
@@ -60,9 +63,10 @@ def valeur(CADRE):
                 LISTE_VALEUR.append(b)"""
     return LISTE_VALEUR
 
-def avalanche(LISTE):
-    """Cette fonction permet de déclancher l'avalanche et donc de faire tourner le programme"""
+"""def avalanche(LISTE):
+    Cette fonction permet de déclancher l'avalanche et donc de faire tourner le programme
     CADRE = LISTE[0]
+    print(LISTE)
     print("init\n" + affichage(CADRE))
     test = True
     result = CADRE
@@ -79,7 +83,7 @@ def avalanche(LISTE):
                         result[a][b-1] += 1
                     if CADRE[a][b+1] != "#":
                         result[a][b+1] += 1
-        print(affichage(result))
+        print( "affichage : ", affichage(result))
         cadre = result
         n = valeur(CADRE)
         test = False
@@ -88,15 +92,49 @@ def avalanche(LISTE):
                 for e in d:
                     if e == c:
                         test = True
+    return result"""
+
+def avalanche(LISTE):
+    """Cette fonction permet de déclancher l'avalanche et donc de faire tourner le programme"""
+    CADRE = LISTE
+    print("la liste est : ",CADRE)
+    print("init\n" + affichage(CADRE))
+    test = True
+    result = CADRE
+    while test == True:
+        for a in range(len(CADRE)):
+            for b in range(len(CADRE)):
+                #print( "cardre_a_B : ",CADRE[a][b])
+                if type(CADRE[a][b]) == int and CADRE[a][b]>3:
+                    result[a][b] -= 4
+                    if CADRE[a-1][b] != "#":
+                        result[a-1][b] += 1
+                    if CADRE[a+1][b] != "#":
+                        result[a+1][b] += 1
+                    if CADRE[a][b-1] != "#":
+                        result[a][b-1] += 1
+                    if CADRE[a][b+1] != "#":
+                        result[a][b+1] += 1
+        print(affichage(result))
+        #print(" result : ", result)
+        cadre = result
+        n = valeur(CADRE)
+        test = False
+        for c in range(4, 10):
+            for d in n:
+                for e in d:
+                    if e == c:
+                        test = True
+    #print("dernier result : ", result)
     return result
 
 #######################################
 # appel à fonction
-#print(creation(5, 5))
+#print(creation(n))
 #
-#print(affichage(creation(5, 5)[0]))
-#print(valeur(creation(5, 5)[0]))
-print(avalanche(creation(5, 5)))
+#print(affichage(creation(n)))
+#print(valeur(creation(n)))
+#print(avalanche(creation(n)))
 #######################################
 # fonctions parties graphique
 
@@ -112,9 +150,36 @@ def grillage(n):
             #TEXT = str(valeur(creation(5, 5)))
             canvas.create_rectangle((i*largeur_case, j*hauteur_case),
                 ((i+1)*largeur_case, (j+1)*hauteur_case), fill=color)
-            canvas.create_text(100, 100, fill = "red", text = str(valeur(creation(5, 5)[0]))) #il faut ajouter du texte pour chaque case
+            #il faut ajouter du texte pour chaque case
 
-#print("\t",Liste_des_valeur[0],  "\n","\t", Liste_des_valeur[1],"\n","\t", Liste_des_valeur[2])
+def affichage_valeurs(CADRE, n):
+    
+    largeur_case = LARGEUR // n
+    hauteur_case = HAUTEUR // n
+    emplacement_x = largeur_case // 2
+    emplacement_y = hauteur_case // 2
+    for a in CADRE:
+        for b in a:
+            canvas.create_text(emplacement_x, emplacement_y, fill = "red", text = str(b))
+            emplacement_x += largeur_case 
+        emplacement_x = largeur_case // 2
+        emplacement_y += hauteur_case 
+
+def avalanche_graphique(CADRE):
+    """Cette fonction permet d'effectuer toutes les avalanches """
+    New_CADRE = avalanche(CADRE)
+    grillage(n)
+    affichage_valeurs(valeur(New_CADRE), n)
+
+    
+
+##############################@
+#variable partie graphique
+CADRE_0 = creation(n)
+CADRE = valeur(CADRE_0)
+
+##############################
+#code partie graphique
 
 bouton = tk.Button(racine, text = "quitter", fg = "black", command = racine.quit, activebackground = "blue", borderwidth=2, bg = "green")
 bouton.grid(column = 1, row = 3)
@@ -122,9 +187,13 @@ bouton.grid(column = 1, row = 3)
 canvas = tk.Canvas(racine, height = HAUTEUR, width = LARGEUR)
 canvas.grid(column = 1, row = 1)
 
-bouton_affichage = tk.Button(racine, text = "Créer le cadre", fg = "black", command = lambda : grillage(n), activebackground = "blue", borderwidth=2, bg = "green")
-bouton_affichage.grid(column = 1, row = 2)
-#grillage(3)
-#canvas.grid_bbox(column=0, row=0, col2=300, row2=300)
+bouton_cadre = tk.Button(racine, text = "Créer le cadre", fg = "black", command = lambda : grillage(n), activebackground = "blue", borderwidth=2, bg = "green")
+bouton_cadre.grid(column = 1, row = 2)
+
+bouton_affichage = tk.Button(racine, text = "Affichage des valeurs", fg = "black", command = lambda : affichage_valeurs(CADRE,n), activebackground = "blue", borderwidth=2, bg = "green")
+bouton_affichage.grid(column = 0, row = 1)
+
+bouton_avalanche = tk.Button(racine, text = "déclencher une avalenche", fg = "black", command = lambda : avalanche_graphique(CADRE_0), activebackground = "blue", borderwidth=2, bg = "green")
+bouton_avalanche.grid(column = 0, row = 2)
 
 racine.mainloop()
